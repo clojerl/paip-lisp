@@ -7,18 +7,19 @@
 
 ;;; The basic are in auxfns.lisp; look for "PATTERN MATCHING FACILITY"
 
-(ns patmatch)
+(ns patmatch
+  (:refer-clojure :exclude [subseq]))
 
-(def debugging false)
+(def ^:dynamic *debugging* false)
 
 (defmacro dbg [& args]
-  (when debugging
+  (when *debugging*
     `(println ~@args)))
 
 (defn variable?
   "Is x a variable (a symbol beginning with ‘?’)?"
   [x]
-  (and (keyword? x) (= "?" (-> x name first))))
+  (and (keyword? x) (= "?" (-> x name first str))))
 
 (defn extend-binding
   [bindings var value]
@@ -118,7 +119,7 @@
 (defmethod single-matcher :and [[_ & patterns] input bindings]
   (cond (nil? bindings) nil
         (nil? patterns) bindings
-        :else (recur (cons :and (rest patterns)) input
+        :else (recur (cons :and (next patterns)) input
                      (pat-match (first patterns)
                                 input
                                 bindings))))
@@ -129,7 +130,7 @@
     nil
     (let [new-bindings (pat-match (first patterns) input bindings)]
       (if-not new-bindings
-        (single-matcher (cons :or (rest patterns)) input bindings)
+        (single-matcher (cons :or (next patterns)) input bindings)
         new-bindings))))
 
 ;; Succeed if none of the patterns match the input.
@@ -183,7 +184,7 @@
 ;; Match zero or one element of input.
 (defmethod segment-matcher :? [pattern input bindings]
   (let [var (second (first pattern))
-        pat (rest pattern)]
+        pat (next pattern)]
     (or (pat-match (cons var pat) input bindings)
         (pat-match pat input bindings))))
 
@@ -195,7 +196,7 @@
     (and (bindings [(mapcar #'car bindings)
                     (mapcar #'cdr bindings)]
                    (eval (second (first pattern))))
-         (pat-match (rest pattern) input bindings)))
+         (pat-match (next pattern) input bindings)))
 
   (defn pat-match-abbrev
     "Define symbol as a macro standing for a pat-match pattern."
@@ -209,7 +210,7 @@
     (cond (and (keyword? pat) (get pat 'expand-pat-match-abbrev))
           (atom pat) pat
           :else (cons (expand-pat-match-abbrev (first pat))
-                      (expand-pat-match-abbrev (rest pat)))))
+                      (expand-pat-match-abbrev (next pat)))))
 
   (defn rule-based-translator
     "Find the first rule in rules that matches input,
@@ -217,7 +218,7 @@
     [input rules & {:keys [matcher rule-if rule-then action]
                     :or {matcher pat-match
                          rule-if first
-                         rule-then rest
+                         rule-then next
                          action subseq}}]
     (some
      (fn [rule]
@@ -248,8 +249,7 @@
      ['(hello (:+ :y)) '(hello world)]
      ['((:? :?x) hello (:+ :?y)) '(hello world)]
      ['((:+ :?x) hello (:+ :?y)) '(hey hello world)]
-     ['((:+ :?x) hello (:+ :?y)) '(hey hey hey, hello world people)]
-     ])
+     ['((:+ :?x) hello (:+ :?y)) '(hey hey hey, hello world people)]])
 
   (doseq [[p i] patterns-inputs]
     (println "----------------")
