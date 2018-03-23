@@ -156,18 +156,18 @@
   [vars bindings other-goals]
 
   (if-not vars
-    (println "Yes")
+    (print "\nYes")
     (doseq [x vars]
-            (println x " = "
-                     (u/subst-bindings bindings x))))
+      (print "\n" x " = "
+             (u/subst-bindings bindings x))))
   (if (continue?)
-      nil
-      (prove-all other-goals bindings)))
+    nil
+    (prove-all other-goals bindings)))
 
 (defn top-level-prove [goals]
   (prove-all `(~@goals (:show-prolog-vars ~@(variables-in goals)))
              {})
-  (println "No."))
+  (println "\nNo."))
 
 (defmacro ?- [& goals]
   `(top-level-prove '~(replace-?-vars goals)))
