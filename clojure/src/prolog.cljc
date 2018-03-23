@@ -178,23 +178,29 @@
 
 (comment
 
-  (<- (:member :?item (:?item :?rest)))
-  (<- (:member :?item (:?x :?rest)) (:member :?item :?rest))
+  (<- (:member :?item (:?item & :?rest)))
+  (<- (:member :?item (:?x & :?rest)) (:member :?item :?rest))
 
   (?- (:member 2 (1 2 3)))
   (?- (:member 2 (1 2 3 2 1)))
-  (?- (:member 2 :?list)))
+  (?- (:member 2 :?list))
+  )
 
-(comment)
+(comment
 
-(<- (:likes Kim Robin))
-(<- (:likes Sandy Lee))
-(<- (:likes Sandy Kim))
-(<- (:likes Robin cats))
-(<- (:likes Sandy :?x) (:likes :?x cats))
-(<- (:likes Kim :?x) (:likes :?x Lee) (:likes :?x Kim))
-(<- (:likes :?x :?x))
+  (<- (:likes Kim Robin))
+  (<- (:likes Sandy Lee))
+  (<- (:likes Sandy Kim))
+  (<- (:likes Robin cats))
+  (<- (:likes Sandy :?x) (:likes :?x cats))
+  (<- (:likes Kim :?x) (:likes :?x Lee) (:likes :?x Kim))
+  (<- (:likes :?x :?x))
 
-(?- (:likes Sandy :?who))
-(?- (:likes :?who Sandy))
-(?- (:likes :?x :?y) (:likes :?y :?x))
+  (?- (:likes Sandy :?who))
+  (?- (:likes :?who Sandy))
+  (?- (:likes :?x :?y) (:likes :?y :?x))
+  )
+
+(comment
+
+  )
