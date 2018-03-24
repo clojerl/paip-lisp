@@ -10,17 +10,16 @@
 
 (declare unify-variable occurs-check)
 
-(defn next' [xs]
-  (let [[maybe-amp x] (drop (- (count xs) 2) xs)]
-    (or (and (= maybe-amp '&) x)
-        (next xs))))
+(defn next' [[_ maybe-amp x & xs :as y]]
+  (or (and (= maybe-amp '&) (nil? xs) x)
+      (next y)))
 
 (defn unify
   "See if x and y match with given bindings."
   ([x y]
    (unify x y {}))
   ([x y bindings]
-  (p/dbg :unify x y bindings)
+  ;; (p/dbg :unify x y bindings)
    (cond
      (nil? bindings) nil
      (= x y) bindings
@@ -34,7 +33,7 @@
 (defn unify-variable
   "Unify var with x, using (and maybe extending) bindings."
   [var x bindings]
-  (p/dbg :unify-variable var x bindings)
+  ;; (p/dbg :unify-variable var x bindings)
   (cond
     (bindings var)
     (unify (bindings var) x bindings)
@@ -73,9 +72,11 @@
     (and (p/variable? x) (bindings x))
     (subst-bindings bindings (bindings x))
 
-    (not (seq? x)) x
-    :esle (cons (subst-bindings bindings (first x))
-                (subst-bindings bindings (next x)))))
+    (and (seq? x) (seq x))
+    (cons (subst-bindings bindings (first x))
+          (subst-bindings bindings (next x)))
+
+    :else x))
 
 ;;; ==============================
 
