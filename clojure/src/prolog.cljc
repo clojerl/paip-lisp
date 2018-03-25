@@ -187,6 +187,7 @@
   (<- (:member :?item (:?item & :?rest)))
   (<- (:member :?item (:?x & :?rest)) (:member :?item :?rest))
 
+  (?- (:member 4 (1 2 3)))
   (?- (:member 2 (1 2 3)))
   (?- (:member 2 (1 2 3 2 1)))
   (?- (:member 2 :?list))

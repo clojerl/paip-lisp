@@ -35,10 +35,10 @@
   [var x bindings]
   ;; (p/dbg :unify-variable var x bindings)
   (cond
-    (bindings var)
+    (contains? bindings var)
     (unify (bindings var) x bindings)
 
-    (and (p/variable? x) (bindings x))
+    (and (p/variable? x) (contains? bindings x))
     (unify var (bindings x) bindings)
 
     (and *occurs-check* (occurs-check var x bindings))
@@ -52,7 +52,7 @@
   (cond
     (= var x) true
 
-    (and (p/variable? x) (bindings x))
+    (and (p/variable? x) (contains? bindings x))
     (occurs-check var (bindings x) bindings)
 
     (seq? x) (or (occurs-check var (first x) bindings)
@@ -69,7 +69,7 @@
     (nil? bindings) nil
     (= bindings {}) x
 
-    (and (p/variable? x) (bindings x))
+    (and (p/variable? x) (contains? bindings x))
     (subst-bindings bindings (bindings x))
 
     (and (seq? x) (seq x))
