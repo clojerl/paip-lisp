@@ -182,7 +182,7 @@
 ;; Examples
 ;;------------------------------------------------------------------------------
 
-(do
+(comment
 
   (<- (:member :?item (:?item & :?rest)))
   (<- (:member :?item (:?x & :?rest)) (:member :?item :?rest))
