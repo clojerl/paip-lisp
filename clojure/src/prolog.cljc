@@ -165,6 +165,7 @@
     (doseq [x vars]
       (print "\n" x " = "
              (u/subst-bindings bindings x))))
+  (flush)
   (if (continue?)
     nil
     (prove-all other-goals bindings)))
@@ -181,7 +182,7 @@
 ;; Examples
 ;;------------------------------------------------------------------------------
 
-(comment
+(do
 
   (<- (:member :?item (:?item & :?rest)))
   (<- (:member :?item (:?x & :?rest)) (:member :?item :?rest))
@@ -205,7 +206,7 @@
   (?- (:likes :?who Sandy))
   (?- (:likes :?x :?y) (:likes :?y :?x)))
 
-(do
+(comment
 
   (<- (:length () 0))
   (<- (:length (:?x & :?y) (1 + :?n)) (:length :?y :?n))
@@ -230,28 +231,28 @@
 
       ;; Each house is of the form:
       ;; (house nationality pet cigarette drink house-color)
-      (:= :?h ((:house norwegian :? :? :? :?)                 ;1,10
+      (:= :?h ((house norwegian :? :? :? :?)                 ;1,10
                :?
-               (:house :? :? :? milk :?) :? :?))              ; 9
-      (:member (:house englishman :? :? :? red) :?h)          ; 2
-      (:member (:house spaniard dog :? :? :?) :?h)            ; 3
-      (:member (:house :? :? :? coffee green) :?h)            ; 4
-      (:member (:house ukrainian :? :? tea :?) :?h)           ; 5
-      (:iright (:house :? :? :? :? ivory)                     ; 6
-               (:house :? :? :? :? green) :?h)
-      (:member (:house :? snails winston :? :?) :?h)          ; 7
-      (:member (:house :? :? kools :? yellow) :?h)            ; 8
-      (:nextto (:house :? :? chesterfield :? :?)              ;11
-               (:house :? fox :? :? :?) :?h)
-      (:nextto (:house :? :? kools :? :?)                     ;12
-               (:house :? horse :? :? :?) :?h)
-      (:member (:house :? :? luckystrike orange-juice :?) :?h);13
-      (:member (:house japanese :? parliaments :? :?) :?h)    ;14
-      (:nextto (:house norwegian :? :? :? :?)                 ;15
-               (:house :? :? :? :? blue) :?h)
+               (house :? :? :? milk :?) :? :?))              ; 9
+      (:member (house englishman :? :? :? red) :?h)          ; 2
+      (:member (house spaniard dog :? :? :?) :?h)            ; 3
+      (:member (house :? :? :? coffee green) :?h)            ; 4
+      (:member (house ukrainian :? :? tea :?) :?h)           ; 5
+      (:iright (house :? :? :? :? ivory)                     ; 6
+               (house :? :? :? :? green) :?h)
+      (:member (house :? snails winston :? :?) :?h)          ; 7
+      (:member (house :? :? kools :? yellow) :?h)            ; 8
+      (:nextto (house :? :? chesterfield :? :?)              ;11
+               (house :? fox :? :? :?) :?h)
+      (:nextto (house :? :? kools :? :?)                     ;12
+               (house :? horse :? :? :?) :?h)
+      (:member (house :? :? luckystrike orange-juice :?) :?h);13
+      (:member (house japanese :? parliaments :? :?) :?h)    ;14
+      (:nextto (house norwegian :? :? :? :?)                 ;15
+               (house :? :? :? :? blue) :?h)
       ;; Now for the questions:
-      (:member (:house :?w :? :? water :?) :?h)                ;Q1
-      (:member (:house :?z zebra :? :? :?) :?h))               ;Q2
+      (:member (house :?w :? :? water :?) :?h)                ;Q1
+      (:member (house :?z zebra :? :? :?) :?h))               ;Q2
 
   (?- (:zebra :?houses :?water-drinker :?zebra-owner))
   )
